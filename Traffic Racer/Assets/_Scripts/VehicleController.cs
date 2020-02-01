@@ -9,6 +9,8 @@ public class VehicleController : MonoBehaviour
 	private bool _isChangingLane = false;					//Check whether the vehicle is currently changing the lane or not
 	private bool _canChangeLanes = true;					//Can the vehicle change lanes
 	private bool _isVehicleAhead = false;					//Check whether a vehicle is ahead or not
+	private bool _isAlreadyOvertaken = false;				//Is this vehicle is already closely overtaken by the racer
+	private bool _isDestroyed = false;						//Has this vehicle already faced an accident
 
 	[SerializeField] float minSpeed = 1f;					//Minimum forward speed of the vehicle
 	[SerializeField] float maxSpeed = 5f;					//Maximum speed of the vehicle
@@ -16,16 +18,46 @@ public class VehicleController : MonoBehaviour
 	[SerializeField] float laneChangeSpeed = 1f;			//Lane change speed of the vehicle
 	[SerializeField] bool isDestructible = false;			//Can this vehicle be destoyed by the racer
 
+	[SerializeField] float minForce = 1f;					//Minimum force applied on the vehicle when collided with another
+	[SerializeField] float maxForce = 9f;					//Maximum force applied on the vehicle when collided with another
+
 	public Transform[] forwardRaycastTransforms;			//Forward Raycast Positions on the vehicle
 	public Transform laneCheckBoxTransform;					//Location from where the lanes has to be checked
 	public float rayLength = 1f;							//Length of the ray
 	public Vector3 laneCheckBoxSize;						//Size of the box to check if the vehicle can change its lane
+
+	public GameObject leftIndicators;						//Left indicators of the vehicle
+	public GameObject rightIndicators;						//Right indicators of the vehicle
+	public GameObject brakes;								//Vehicle brakes
+
+	public GameObject accidentSmoke;						//Smoke which appears after vehicle accident
 
 	public int laneNumber = 0;								//Lane number in which the vehicle has been spawned
 
     // Start is called before the first frame update
     void Start()
     {
+		//If the game mode is two ways and the vehicle is on opposite lane
+		//Then flip the vehicle
+		if(GameManager.gameMode == 1 && laneNumber < 2)
+		{
+			transform.rotation = Quaternion.Euler (0f, 180f, 0f);
+
+			//Increase the speed range of the vehicle
+			//minSpeed += 2f;
+			//maxSpeed += 3f;
+		}
+		else
+		{
+			transform.rotation = Quaternion.Euler (0f, 0f, 0f);
+		}
+
+		//If the game mode is free ride than all vehicle can be destroyed
+		if(GameManager.gameMode == 2)
+		{
+			isDestructible = true;
+		}
+
         //Calculate the random vehicle speed
 		_currentVehicleSpeed = Random.Range (minSpeed, maxSpeed);
 
@@ -35,11 +67,15 @@ public class VehicleController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-		//Handle all the environment checks
-		HandleRayCasts ();
+		//Handle vehicle states only if it is not already destroyed
+		if(!_isDestroyed)
+		{
+			//Handle all the environment checks
+			HandleRayCasts ();
 
-		//Move the vehicle forward with _currentVehicleSpeed
-		transform.Translate (Vector3.forward * _currentVehicleSpeed * Time.deltaTime);
+			//Move the vehicle forward with _currentVehicleSpeed
+			transform.Translate (Vector3.forward * _currentVehicleSpeed * Time.deltaTime);
+		}
 
 		//If the distance of this vehicle from the racer is greater than the distanceToDestroy
 		//Then destroy this vehicle
@@ -62,19 +98,26 @@ public class VehicleController : MonoBehaviour
 		//Shoot a ray on each ray cast position
 		for(int i = 0; i < forwardRaycastTransforms.Length; i++)
 		{
-			if(Physics.Raycast (forwardRaycastTransforms[i].position, Vector3.forward, out forwardHitInformation, rayLength))
+			if(Physics.Raycast (forwardRaycastTransforms[i].position, forwardRaycastTransforms[i].forward, out forwardHitInformation, rayLength))
 			{
-				//Some vehicle is ahead
-				_isVehicleAhead = true;
-
 				//Get the collided object information
 				GameObject collidedObject = forwardHitInformation.collider.gameObject;
 
 				//Check whether the collided object is a vehicle or not
 				if(collidedObject.layer == LevelController.layerEnemyToInt)
 				{
+					//Some vehicle is ahead
+					_isVehicleAhead = true;
+
 					//Get the speed of the ray casted vehicle
 					newVehicleSpeed = collidedObject.GetComponentInParent<VehicleController> ().GetVehicleSpeed ();
+
+					//If the vehicle ahead is slower than this vehicle
+					//Then only change the vehicle speed
+					if(newVehicleSpeed > _originalVehicleSpeed)
+					{
+						newVehicleSpeed = _originalVehicleSpeed;
+					}
 
 					//Get the lane chaging status of the vehicle ahead
 					_isVehicleAheadChangingLane = collidedObject.GetComponentInParent<VehicleController> ().GetLaneChangingStatus ();
@@ -92,7 +135,7 @@ public class VehicleController : MonoBehaviour
 						_canChangeLanes = false;
 					}*/
 
-					if(Mathf.Abs (colliders[j].gameObject.transform.position.x - transform.position.x) > 0.05f)
+					if((Mathf.Abs (colliders[j].gameObject.transform.position.x - transform.position.x) > 0.05f) && colliders[j].gameObject.layer == LevelController.layerEnemyToInt)
 					{
 						_canChangeLanes = false;
 					}
@@ -125,12 +168,18 @@ public class VehicleController : MonoBehaviour
 			}
 			else
 			{
+				//Enable brakes
+				brakes.SetActive (true);
+
 				//If the collided object is a vehicle then match its speed
 				_currentVehicleSpeed = Mathf.Lerp (_currentVehicleSpeed, newVehicleSpeed, LevelController.DeAccelerationSpeed () * Time.deltaTime);
 			}
 		}
 		else
 		{
+			//Disable brakes
+			brakes.SetActive (false);
+
 			//If the vehicle is moving freely
 			//Then change its speed to original speed
 			_currentVehicleSpeed = Mathf.Lerp (_currentVehicleSpeed, _originalVehicleSpeed, LevelController.AccelerationSpeed () * Time.deltaTime);
@@ -172,6 +221,23 @@ public class VehicleController : MonoBehaviour
 		//Then move left otherwise move right
 		if(newLaneNumber < laneNumber)
 		{
+			if(GameManager.gameMode == 1 && laneNumber < 2)
+			{
+				//Disable left indicators
+				leftIndicators.SetActive (false);
+
+				//Enable right indicators
+				rightIndicators.SetActive (true);
+			}
+			else
+			{
+				//Disable right indicators
+				rightIndicators.SetActive (false);
+
+				//Enable left indicators
+				leftIndicators.SetActive (true);
+			}
+
 			//Calculate the new lane position
 			float newPositionX = transform.position.x - laneWidth;
 
@@ -179,11 +245,31 @@ public class VehicleController : MonoBehaviour
 		}
 		else
 		{
+			if(GameManager.gameMode == 1 && laneNumber < 2)
+			{
+				//Disable right indicators
+				rightIndicators.SetActive (false);
+
+				//Enable left indicators
+				leftIndicators.SetActive (true);
+			}
+			else
+			{
+				//Disable left indicators
+				leftIndicators.SetActive (false);
+
+				//Enable right indicators
+				rightIndicators.SetActive (true);
+			}
+
 			//Calculate the new lane position
 			float newPositionX = transform.position.x + laneWidth;
 
 			StartCoroutine (ChangeLane (newPositionX));
 		}
+
+		//Disable brakes
+		brakes.SetActive (false);
 
 		//Change the current lane number
 		laneNumber = newLaneNumber;
@@ -202,6 +288,11 @@ public class VehicleController : MonoBehaviour
 			yield return null;
 		}
 
+		//Disable left indicators
+		leftIndicators.SetActive (false);
+		//Disable right indicators
+		rightIndicators.SetActive (false);
+
 		//Now the vehicle has changed its lane
 		_isChangingLane = false;
 
@@ -214,28 +305,72 @@ public class VehicleController : MonoBehaviour
 		//Then this is accident situation
 		if(col.gameObject.layer == LevelController.layerEnemyToInt)
 		{
-			VehicleAccident ();
+			//Get the collision direction
+			Vector3 collisionDirection = col.gameObject.transform.position - transform.position;
+
+			VehicleAccident (collisionDirection);
+		}
+
+		//If the vehicle has collided with the racer
+		//Then this is game over condition
+		if(col.gameObject.layer == LevelController.layerRacerToInt)
+		{
+			//Game Over if the vehicle can not be destroyed
+			if(!isDestructible && !LevelController.IsGameOver ())
+			{
+				LevelController.GameOver ();
+			}
+
+			//Get the collision direction
+			Vector3 collisionDirection = col.gameObject.transform.position - transform.position;
+
+			VehicleAccident (collisionDirection);
 		}
 	}
 
-	void VehicleAccident()
+	public void VehicleAccident(Vector3 collisionDirection)
 	{
-		Debug.Log ("Accident");
-		Destroy (gameObject);
+		if(!_isDestroyed)
+		{
+			//Play vehicle accident audio
+			AudioManager.PlayVehicleAccidentAudio ();
+		}
+
+		//Update accident status
+		_isDestroyed = true;
+
+		//This vehicle can now be destroyed by the racer
+		isDestructible = true;
+
+		//Reset current speed of this vehicle
+		_currentVehicleSpeed = 0f;
+
+		float appliedForce = Random.Range (minForce, maxForce);
+
+		this.GetComponent<Rigidbody> ().AddForce ((collisionDirection + Vector3.forward + Vector3.up) * appliedForce, ForceMode.Impulse);
+
+		//Enable accident smoke
+		accidentSmoke.SetActive (true);
 	}
 
 	void OnTriggerEnter(Collider col)
 	{
-		if(col.gameObject.layer == LevelController.layerPlayerToInt)
+		//Check for close overtakes of the racer and the vehicle is not already closely overtaken
+		if(col.gameObject.layer == LevelController.layerPlayerToInt && !_isAlreadyOvertaken && !_isDestroyed)
 		{
-			Debug.Log ("Close Pass");
+			_isAlreadyOvertaken = true;
+
+			//Add points to current score
+			LevelController.CloseCall ();
 		}
 	}
 
-	public void DestroyVehicle()
+	public void DestroyVehicle(Vector3 collisionDirection)
 	{
-		Debug.Log ("Destroyed");
-		Destroy (gameObject);
+		//Add points to current score
+		LevelController.ObstacleDestroyed ();
+
+		VehicleAccident (collisionDirection);
 	}
 
 	//Draw Gizmos
@@ -243,6 +378,11 @@ public class VehicleController : MonoBehaviour
 	{
 		Gizmos.color = Color.red;
 		Gizmos.DrawWireCube (laneCheckBoxTransform.position, laneCheckBoxSize);
+
+		for (int i = 0; i < forwardRaycastTransforms.Length; i++) 
+		{
+			Gizmos.DrawRay (forwardRaycastTransforms[i].position, forwardRaycastTransforms[i].forward);
+		}
 	}
 
 	public float GetVehicleSpeed()

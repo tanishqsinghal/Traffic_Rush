@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3501866891771100636
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3501866891771100638}
+  - component: {fileID: 3501866891771100639}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3501866891771100638
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3501866891771100636}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3501866891771100639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3501866891771100636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cfad5b959e0995479b3fff28317e336, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  musicClip: {fileID: 8300000, guid: 4a7721c943ddb204aa371538290e554c, type: 3}
+  menuClip: {fileID: 8300000, guid: 8c402bd1a804efa4094724fea9877b0d, type: 3}
+  levelStingClip: {fileID: 8300000, guid: 56d176135168e4788b212b0059fee63b, type: 3}
+  highScoreClip: {fileID: 8300000, guid: 2667a0a008b044e218b63df62e2be749, type: 3}
+  uiTransitionClip: {fileID: 0}
+  rewardClip: []
+  purchaseClip: {fileID: 8300000, guid: 5f8878b1c07279948945dd37f46af396, type: 3}
+  selectionClip: {fileID: 8300000, guid: 0982893ec640a9940a0e62abb1b7b531, type: 3}
+  countClip: {fileID: 8300000, guid: 32d4b1811dda14a6cb9e059ee8ad17d2, type: 3}
+  errorClip: {fileID: 8300000, guid: 65228e4bd627dad4b844eda200666145, type: 3}
+  nitroPickupClip: {fileID: 8300000, guid: 8a343cb2e5bf24d129408aa2696dd0ce, type: 3}
+  levelIncreamentClip: {fileID: 8300000, guid: 7bd6b897eb5ca4b7d88a205c4a51640c, type: 3}
+  nitrousClip: {fileID: 8300000, guid: 2753e0ec23a74d6448d91f0be83c3551, type: 3}
+  closePassClip: {fileID: 8300000, guid: fe0b1f9aeb45b41b089175aeeabd5d95, type: 3}
+  brakesClip: {fileID: 8300000, guid: 51cee6aeebe0afe40af4c0a933a710b6, type: 3}
+  deathClip: {fileID: 8300000, guid: 8c287f25bbea84c0588789c62f6fb47d, type: 3}
+  vehicleAccidentClip: {fileID: 8300000, guid: b99da9a57308d4ba1bee1cf1d9038376, type: 3}
+  normalEngineClip: {fileID: 8300000, guid: f42ee6c61e2b5a049b588a485b2f267f, type: 3}
+  boostedEngineClip: {fileID: 8300000, guid: 2b9be05b0a886f147b9ac9a64d6a22fe, type: 3}
+  musicGroup: {fileID: 243263979206426554, guid: b17abdf1ba97aaf42a8625c1b8b0a03e,
+    type: 2}
+  stingGroup: {fileID: 243950416025707282, guid: b17abdf1ba97aaf42a8625c1b8b0a03e,
+    type: 2}
+  engineGroup: {fileID: -5098418183038857327, guid: b17abdf1ba97aaf42a8625c1b8b0a03e,
+    type: 2}
+  playerGroup: {fileID: 243604798028751526, guid: b17abdf1ba97aaf42a8625c1b8b0a03e,
+    type: 2}
+  uiGroup: {fileID: 243737122082767898, guid: b17abdf1ba97aaf42a8625c1b8b0a03e, type: 2}
+  environmentGroup: {fileID: 243144461968410628, guid: b17abdf1ba97aaf42a8625c1b8b0a03e,
+    type: 2}
+  enemyGroup: {fileID: 243730221370671192, guid: b17abdf1ba97aaf42a8625c1b8b0a03e,
+    type: 2}
