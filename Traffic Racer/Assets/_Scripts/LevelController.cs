@@ -238,15 +238,15 @@ public class LevelController : MonoBehaviour
 
 					if(GameManager.gameMode == 0)
 					{
-						Social.ReportScore (current._score, "CgkIlLCwipgGEAIQAQ", (bool success) =>{});
+						Social.ReportScore (current._score, "CgkI8prkgvkHEAIQAA", (bool success) =>{});
 					}
 					else if(GameManager.gameMode == 1)
 					{
-						Social.ReportScore (current._score, "CgkIlLCwipgGEAIQAg", (bool success) =>{});
+						Social.ReportScore (current._score, "CgkI8prkgvkHEAIQAQ", (bool success) =>{});
 					}
 					else if(GameManager.gameMode == 2)
 					{
-						Social.ReportScore (current._score, "CgkIlLCwipgGEAIQAw", (bool success) =>{});
+						Social.ReportScore (current._score, "CgkI8prkgvkHEAIQAg", (bool success) =>{});
 					}
 				}
 

@@ -97,7 +97,7 @@ public class GameManager : MonoBehaviour
 
 	void ShowOneWayLeaderboard() {
 		if (PlayGamesPlatform.Instance.localUser.authenticated) {
-			PlayGamesPlatform.Instance.ShowLeaderboardUI("CgkIlLCwipgGEAIQAQ");
+			PlayGamesPlatform.Instance.ShowLeaderboardUI("CgkI8prkgvkHEAIQAA");
 		}
 		else {
 			SignIn ();
@@ -106,7 +106,7 @@ public class GameManager : MonoBehaviour
 
 	void ShowTwoWayLeaderboard() {
 		if (PlayGamesPlatform.Instance.localUser.authenticated) {
-			PlayGamesPlatform.Instance.ShowLeaderboardUI("CgkIlLCwipgGEAIQAg");
+			PlayGamesPlatform.Instance.ShowLeaderboardUI("CgkI8prkgvkHEAIQAQ");
 		}
 		else {
 			SignIn ();
@@ -115,7 +115,7 @@ public class GameManager : MonoBehaviour
 
 	void ShowRageModeLeaderboard() {
 		if (PlayGamesPlatform.Instance.localUser.authenticated) {
-			PlayGamesPlatform.Instance.ShowLeaderboardUI("CgkIlLCwipgGEAIQAw");
+			PlayGamesPlatform.Instance.ShowLeaderboardUI("CgkI8prkgvkHEAIQAg");
 		}
 		else {
 			SignIn ();
