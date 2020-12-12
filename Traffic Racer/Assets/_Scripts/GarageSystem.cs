@@ -20,7 +20,6 @@ public class GarageSystem : MonoBehaviour
 
 	public GameObject unlockSection;					//Unlock section for the bike displayed if the bike is locked
 	public TextMeshProUGUI bikePriceText;				//UI text which displayes current bike price
-	public TextMeshProUGUI totalMoneyText;				//UI text which displays total money that the player has
 
 	public GameObject garageSystem;						//Garage object in the scene
 	public GameObject gameModeSelector;					//Game mode selection UI
@@ -33,12 +32,21 @@ public class GarageSystem : MonoBehaviour
 		_selectedBikeNumber = PlayerPrefs.GetInt ("SelectedBikeNumber", 0);
 
 		//Set total money
-		totalMoneyText.text = PlayerPrefs.GetInt ("AvailableMoney", 0).ToString ();
+		//GameManager.totalMoneyText.text = PlayerPrefs.GetInt ("AvailableMoney", 0).ToString ();
 
 		//Start menu music
 		AudioManager.StartMenuAudio ();
 
 		DisplayBike ();
+
+		//Hide all banner ads
+		AdManager.HideAllBannerAds ();
+
+		//Send request for all ads
+		AdManager.RequestAllBannerAds ();
+
+		//Show garage banner ad
+		AdManager.ShowBannerAdGarage ();
 	}
 
 	void Update()
@@ -146,7 +154,7 @@ public class GarageSystem : MonoBehaviour
 			AudioManager.PlayPurchaseSound ();
 
 			//Count down the available money
-			StartCoroutine (CountDownAnimation (availableMoney, (availableMoney - price), totalMoneyText));
+			StartCoroutine (CountDownAnimation (availableMoney, (availableMoney - price), GameManager.totalMoneyText));
 
 			//Deduct the money from available money
 			availableMoney -= price;
@@ -164,7 +172,7 @@ public class GarageSystem : MonoBehaviour
 			startButton.gameObject.SetActive (true);
 
 			//Update total money text
-			//totalMoneyText.text = availableMoney.ToString ();
+			//GameManager.totalMoneyText.text = availableMoney.ToString ();
 		}
 		else
 		{
@@ -214,6 +222,17 @@ public class GarageSystem : MonoBehaviour
 
 	public void SelectGameMode(int gameModeNumber)
 	{
+		//Hide the garage banner ad
+		AdManager.HideBannerGarage ();
+
+		//Request new banner ad for garage
+		AdManager.RequestNewBannerAdGarage ();
+
 		GameManager.gameMode = gameModeNumber;
+	}
+
+	public void ShowRewardedAd()
+	{
+		AdManager.ShowRewardedAd ();
 	}
 }

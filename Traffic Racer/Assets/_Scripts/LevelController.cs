@@ -83,7 +83,6 @@ public class LevelController : MonoBehaviour
 	public TextMeshProUGUI totalDestructionsRewardText;		//UI text which displays rewards for total number of destructions after game over
 	public TextMeshProUGUI oppositeLaneTimeRewardText;		//UI text which displays rewards for Time ridden in opposite lane after game over
 	public TextMeshProUGUI totalRewardText;					//UI text which displays the total reward for this game session
-	public TextMeshProUGUI totalMoneyText;					//UI text which displays total money that the player has
 
 	void Awake()
 	{
@@ -169,16 +168,16 @@ public class LevelController : MonoBehaviour
 		AudioManager.PauseAudio ();
 
 		//Display banner ad
-		AdManager.ShowBannerAd ();
+		AdManager.ShowBannerAdPause ();
 	}
 
 	public void ResumeGame()
 	{
 		//Hide banner ad
-		AdManager.HideBanner ();
+		AdManager.HideBannerPause ();
 
 		//Request new banner ad
-		AdManager.RequestNewBannerAd ();
+		AdManager.RequestNewBannerAdPause ();
 
 		//Disable pause menu UI
 		pauseMenuCanvas.SetActive (false);
@@ -272,8 +271,8 @@ public class LevelController : MonoBehaviour
 	{
 		//Increament number of crashes in the current game session
 		GameManager.totalCrashes++;
-		//Show ad every second time racer crashes
-		if(GameManager.totalCrashes % 2 == 0)
+		//Don't show ads on first crash
+		if(GameManager.totalCrashes > 1)
 		{
 			AdManager.ShowFullScreenAd ();
 		}
@@ -281,7 +280,7 @@ public class LevelController : MonoBehaviour
 		StartCoroutine ("EnableGameOverUI");
 
 		//Display banner ad
-		AdManager.ShowBannerAd ();
+		AdManager.ShowBannerAdDeath ();
 	}
 
 	IEnumerator EnableGameOverUI()
@@ -328,7 +327,7 @@ public class LevelController : MonoBehaviour
 		int totalReward = totalDistanceReward + totalClosePassesReward + totalDestructionsReward + timeInOppositeLaneReward;
 
 		//Set money count
-		totalMoneyText.text = PlayerPrefs.GetInt ("AvailableMoney", 0).ToString ();
+		//GameManager.totalMoneyText.text = PlayerPrefs.GetInt ("AvailableMoney", 0).ToString ();
 		//Increament the total money that the player has
 		int updatedMoney = totalReward + PlayerPrefs.GetInt ("AvailableMoney", 0);
 
@@ -365,7 +364,7 @@ public class LevelController : MonoBehaviour
 			yield return new WaitForSecondsRealtime (countAnimationTime);
 		}
 
-		StartCoroutine (CountAnimation ((updatedMoney - totalReward), updatedMoney, totalMoneyText));
+		//StartCoroutine (CountAnimation ((updatedMoney - totalReward), updatedMoney, GameManager.totalMoneyText));
 	}
 
 	IEnumerator CountAnimation(float initialValue, float targetValue, TextMeshProUGUI targetText)
@@ -532,5 +531,10 @@ public class LevelController : MonoBehaviour
 	public static bool IsGameOver()
 	{
 		return current._isGameOver;
+	}
+
+	public void ShowRewardedAd()
+	{
+		AdManager.ShowRewardedAd ();
 	}
 }

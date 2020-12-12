@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class GameManager : MonoBehaviour
 	public static int selectedBikeNumber = 0;			//Number of the currently selected bike
 
 	public static int totalCrashes = 0;					//Total rider crashes in the current game session
+
+	public static TextMeshProUGUI totalMoneyText;		//UI text which displays total money that the player has
 
 	void Awake()
 	{
@@ -129,9 +132,9 @@ public class GameManager : MonoBehaviour
 		SceneManager.LoadScene (sceneIndex);
 
 		//Hide banner ad
-		AdManager.HideBanner ();
+		//AdManager.HideBanner ();
 
 		//Request new banner ad
-		AdManager.RequestNewBannerAd ();
+		//AdManager.RequestNewBannerAd ();
 	}
 }

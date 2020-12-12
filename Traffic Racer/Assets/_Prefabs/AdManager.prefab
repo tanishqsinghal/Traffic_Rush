@@ -44,5 +44,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _appId: ca-app-pub-5071837059669150~8625039175
-  _bannerAdId: ca-app-pub-5071837059669150/9143913928
-  _fullScreenAdId: ca-app-pub-5071837059669150/9335485615
+  _bannerAdIdGarage: ca-app-pub-5071837059669150/7030377474
+  _bannerAdIdPause: ca-app-pub-5071837059669150/2244615342
+  _bannerAdIdDeath: ca-app-pub-5071837059669150/5062350372
+  _fullScreenAdId: ca-app-pub-5071837059669150/4679206995
+  _rewardedAdID: ' ca-app-pub-5071837059669150/3174553634'
